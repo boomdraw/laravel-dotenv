@@ -1,0 +1,53 @@
+{
+    "name": "boomdraw/laravel-dotenv",
+    "description": "Laravel dotenv manager",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivan Slesarenko",
+            "email": "info@boomdraw.com",
+            "homepage": "https://boomdraw.com",
+            "role": "Owner"
+        }
+    ],
+    "support": {
+        "email": "support@boomdraw.com"
+    },
+    "keywords": [
+        "laravel",
+        "dotenv",
+        "env"
+    ],
+    "require": {
+        "illuminate/support": "~5.7|~5.8",
+        "vlucas/phpdotenv": "^3.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~7.0|~8.0",
+        "orchestra/testbench": "~3.7|~3.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Boomdraw\\Dotenv\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Boomdraw\\Dotenv\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Boomdraw\\Dotenv\\DotenvServiceProvider"
+            ],
+            "aliases": {
+                "Dotenv": "Boomdraw\\Dotenv\\Facades\\Dotenv"
+            }
+        }
+    }
+}
