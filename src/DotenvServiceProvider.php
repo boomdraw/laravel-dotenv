@@ -29,6 +29,13 @@ class DotenvServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/dotenv.php', 'dotenv');
 
         $this->registerServices();
+
+        $this->commands([
+            Console\DotenvAddCommand::class,
+            Console\DotenvDeleteCommand::class,
+            Console\DotenvPutCommand::class,
+            Console\DotenvSetCommand::class
+        ]);
     }
 
     /**
