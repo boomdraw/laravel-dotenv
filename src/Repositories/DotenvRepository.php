@@ -1,15 +1,12 @@
 <?php
 
-
 namespace Boomdraw\Dotenv\Repositories;
 
-use Illuminate\Support\{
-    Arr, Collection, Str
-};
+use Boomdraw\Dotenv\Contracts\{DotenvContract, DotenvReaderContract, DotenvWriterContract};
+use Boomdraw\Dotenv\Exceptions\UnreadableFileException;
+use Boomdraw\Dotenv\Exceptions\UnwritableFileException;
 use Illuminate\Contracts\Config\Repository as Config;
-use Boomdraw\Dotenv\Contracts\{
-    DotenvContract, DotenvReaderContract, DotenvWriterContract
-};
+use Illuminate\Support\{Arr, Collection, Str};
 
 class DotenvRepository implements DotenvContract
 {
@@ -47,7 +44,7 @@ class DotenvRepository implements DotenvContract
      * @param Config $config
      * @param DotenvReaderContract $reader
      * @param DotenvWriterContract $writer
-     * @throws \Boomdraw\Dotenv\Exceptions\UnreadableFileException
+     * @throws UnreadableFileException
      */
     public function __construct(Config $config, DotenvReaderContract $reader, DotenvWriterContract $writer)
     {
@@ -55,6 +52,21 @@ class DotenvRepository implements DotenvContract
         $this->reader = $reader;
         $this->writer = $writer;
         $this->reload();
+    }
+
+    /**
+     * Reload dotenv file content
+     *
+     * @return DotenvRepository
+     * @throws UnreadableFileException
+     */
+    public function reload(): self
+    {
+        $this->reader->load($this->config['env_path']);
+        $this->writer->setPath($this->config['env_path'])->setContent($this->reader->content());
+        $this->entries = collect($this->reader->entries());
+
+        return $this;
     }
 
     /**
@@ -67,21 +79,6 @@ class DotenvRepository implements DotenvContract
     public function __call(string $name, array $arguments)
     {
         return $this->all()->$name(...$arguments);
-    }
-
-    /**
-     * Reload dotenv file content
-     *
-     * @return DotenvRepository
-     * @throws \Boomdraw\Dotenv\Exceptions\UnreadableFileException
-     */
-    public function reload(): self
-    {
-        $this->reader->load($this->config['env_path']);
-        $this->writer->setPath($this->config['env_path'])->setContent($this->reader->content());
-        $this->entries = collect($this->reader->entries());
-
-        return $this;
     }
 
     /**
@@ -100,7 +97,7 @@ class DotenvRepository implements DotenvContract
      * @param mixed $key
      * @param mixed $value
      * @return DotenvRepository
-     * @throws \Boomdraw\Dotenv\Exceptions\UnwritableFileException
+     * @throws UnwritableFileException
      */
     public function add($key, $value = null): self
     {
@@ -113,70 +110,13 @@ class DotenvRepository implements DotenvContract
     }
 
     /**
-     * Change existing setter value
-     *
-     * @param mixed $key
-     * @param mixed $value
-     * @return DotenvRepository
-     * @throws \Boomdraw\Dotenv\Exceptions\UnwritableFileException
-     */
-    public function put($key, $value = null): self
-    {
-        return $this->prepareData($key, $value, function ($k, $v) {
-            if ($this->entries->has($k)) {
-                $this->setEntry($k, $v);
-                $this->writer->put($k, $v);
-            }
-        });
-    }
-
-    /**
-     * Set setter regardless of the existence
-     *
-     * @param mixed $key
-     * @param mixed $value
-     * @return DotenvRepository
-     * @throws \Boomdraw\Dotenv\Exceptions\UnwritableFileException
-     */
-    public function set($key, $value = null): self
-    {
-        return $this->prepareData($key, $value, function ($k, $v) {
-            if ($this->entries->has($k)) {
-                $this->writer->put($k, $v);
-            } else {
-                $this->writer->add($k, $v);
-            }
-            $this->setEntry($k, $v);
-        });
-    }
-
-    /**
-     * Delete setter
-     *
-     * @param string|array $key
-     * @return DotenvRepository
-     * @throws \Boomdraw\Dotenv\Exceptions\UnwritableFileException
-     */
-    public function delete($key): self
-    {
-        $key = Arr::wrap($key);
-        $this->entries->forget($key);
-        foreach ($key as $item) {
-            $this->writer->delete($item);
-        }
-        $this->writer->save();
-
-        return $this;
-    }
-
-    /**
      * Prepare data for writing
      *
      * @param mixed $key
      * @param mixed $value
      * @param callable $callback
      * @return DotenvRepository
-     * @throws \Boomdraw\Dotenv\Exceptions\UnwritableFileException
+     * @throws UnwritableFileException
      */
     protected function prepareData($key, $value, callable $callback): self
     {
@@ -236,6 +176,63 @@ class DotenvRepository implements DotenvContract
     protected function setEntry(string $key, string $value): self
     {
         $this->entries[$key] = trim($value, '"');
+
+        return $this;
+    }
+
+    /**
+     * Change existing setter value
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return DotenvRepository
+     * @throws UnwritableFileException
+     */
+    public function put($key, $value = null): self
+    {
+        return $this->prepareData($key, $value, function ($k, $v) {
+            if ($this->entries->has($k)) {
+                $this->setEntry($k, $v);
+                $this->writer->put($k, $v);
+            }
+        });
+    }
+
+    /**
+     * Set setter regardless of the existence
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return DotenvRepository
+     * @throws UnwritableFileException
+     */
+    public function set($key, $value = null): self
+    {
+        return $this->prepareData($key, $value, function ($k, $v) {
+            if ($this->entries->has($k)) {
+                $this->writer->put($k, $v);
+            } else {
+                $this->writer->add($k, $v);
+            }
+            $this->setEntry($k, $v);
+        });
+    }
+
+    /**
+     * Delete setter
+     *
+     * @param string|array $key
+     * @return DotenvRepository
+     * @throws UnwritableFileException
+     */
+    public function delete($key): self
+    {
+        $key = Arr::wrap($key);
+        $this->entries->forget($key);
+        foreach ($key as $item) {
+            $this->writer->delete($item);
+        }
+        $this->writer->save();
 
         return $this;
     }

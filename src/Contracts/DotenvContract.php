@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Boomdraw\Dotenv\Contracts;
 
 use Illuminate\Support\Collection;

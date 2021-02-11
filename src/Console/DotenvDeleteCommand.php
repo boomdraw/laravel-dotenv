@@ -2,8 +2,8 @@
 
 namespace Boomdraw\Dotenv\Console;
 
-use Illuminate\Console\Command;
 use Boomdraw\Dotenv\Facades\Dotenv;
+use Illuminate\Console\Command;
 
 class DotenvDeleteCommand extends Command
 {

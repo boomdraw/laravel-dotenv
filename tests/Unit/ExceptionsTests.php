@@ -1,12 +1,11 @@
 <?php
 
-
 namespace Boomdraw\Dotenv\Tests\Unit;
 
 use Dotenv;
-use Boomdraw\Dotenv\Tests\TestCase;
 use Boomdraw\Dotenv\Exceptions\UnreadableFileException;
 use Boomdraw\Dotenv\Exceptions\UnwritableFileException;
+use Boomdraw\Dotenv\Tests\TestCase;
 
 class ExceptionsTests extends TestCase
 {

@@ -4,7 +4,6 @@ namespace Boomdraw\Dotenv\Tests\Unit;
 
 use Dotenv;
 use Boomdraw\Dotenv\Tests\TestCase;
-use Boomdraw\Dotenv\Exceptions\UnwritableFileException;
 
 class ReadTests extends TestCase
 {

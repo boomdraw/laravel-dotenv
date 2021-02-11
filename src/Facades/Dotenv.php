@@ -1,10 +1,9 @@
 <?php
 
-
 namespace Boomdraw\Dotenv\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use Boomdraw\Dotenv\Contracts\DotenvContract;
+use Illuminate\Support\Facades\Facade;
 
 class Dotenv extends Facade
 {

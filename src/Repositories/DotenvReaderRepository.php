@@ -1,12 +1,10 @@
 <?php
 
-
 namespace Boomdraw\Dotenv\Repositories;
 
-use Dotenv\Lines;
-use Dotenv\Parser;
 use Boomdraw\Dotenv\Contracts\DotenvReaderContract;
 use Boomdraw\Dotenv\Exceptions\UnreadableFileException;
+use Dotenv\Parser\Parser;
 
 class DotenvReaderRepository implements DotenvReaderContract
 {
@@ -48,23 +46,15 @@ class DotenvReaderRepository implements DotenvReaderContract
     }
 
     /**
-     * Returns file content
+     * Set content var from file
      *
-     * @return string
+     * @return void
+     * @throws UnreadableFileException
      */
-    public function content(): string
+    protected function setContent(): void
     {
-        return $this->content;
-    }
-
-    /**
-     * Returns parsed entries
-     *
-     * @return array
-     */
-    public function entries(): array
-    {
-        return $this->entries;
+        $this->isFileReadable($this->path);
+        $this->content = file_get_contents($this->path);
     }
 
     /**
@@ -84,38 +74,36 @@ class DotenvReaderRepository implements DotenvReaderContract
     }
 
     /**
-     * Split and process file lines
-     *
-     * @return array
-     */
-    protected function lines(): array
-    {
-        return Lines::process(preg_split("/(\r\n|\n|\r)/", $this->content));
-    }
-
-    /**
-     * Set content var from file
-     *
-     * @return void
-     * @throws UnreadableFileException
-     */
-    protected function setContent(): void
-    {
-        $this->isFileReadable($this->path);
-        $this->content = file_get_contents($this->path);
-    }
-
-    /**
      * Parse and set entries from file content
      *
      * @return void
      */
     protected function setEntries(): void
     {
-        foreach ($this->lines() as $line) {
-            [$name, $value] = Parser::parse($line);
-            $entries[$name] = $value;
+        $entries = (new Parser)->parse($this->content);
+        $this->entries = [];
+        foreach ($entries as $entry) {
+            $this->entries[$entry->getName()] = $entry->getValue()->get()->getChars();
         }
-        $this->entries = $entries;
+    }
+
+    /**
+     * Returns file content
+     *
+     * @return string
+     */
+    public function content(): string
+    {
+        return $this->content;
+    }
+
+    /**
+     * Returns parsed entries
+     *
+     * @return array
+     */
+    public function entries(): array
+    {
+        return $this->entries;
     }
 }

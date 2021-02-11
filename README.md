@@ -120,7 +120,7 @@ and `Dotenv` content.
 You can run the tests with:
 
 ```bash
-vendor/bin/phpunit
+composer test
 ```
 
 ## Security

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Boomdraw\Dotenv\Exceptions;
 
 use Exception;

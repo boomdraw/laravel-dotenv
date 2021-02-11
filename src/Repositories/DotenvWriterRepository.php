@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Boomdraw\Dotenv\Repositories;
 
 use Boomdraw\Dotenv\Contracts\DotenvWriterContract;

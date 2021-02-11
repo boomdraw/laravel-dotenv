@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Boomdraw\Dotenv\Contracts;
-
 
 interface DotenvWriterContract
 {

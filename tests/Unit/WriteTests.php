@@ -3,9 +3,8 @@
 namespace Boomdraw\Dotenv\Tests\Unit;
 
 use Dotenv;
-use Illuminate\Support\Str;
 use Boomdraw\Dotenv\Tests\TestCase;
-use Boomdraw\Dotenv\Exceptions\UnreadableFileException;
+use Illuminate\Support\Str;
 
 class WriteTests extends TestCase
 {

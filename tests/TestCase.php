@@ -2,8 +2,8 @@
 
 namespace Boomdraw\Dotenv\Tests;
 
-use Boomdraw\Dotenv\Facades\Dotenv;
 use Boomdraw\Dotenv\DotenvServiceProvider;
+use Boomdraw\Dotenv\Facades\Dotenv;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase

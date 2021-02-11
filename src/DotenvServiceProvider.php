@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Boomdraw\Dotenv;
 
 use Illuminate\Support\ServiceProvider;
