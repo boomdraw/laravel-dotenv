@@ -33,7 +33,9 @@ class DotenvServiceProvider extends ServiceProvider
             Console\DotenvAddCommand::class,
             Console\DotenvDeleteCommand::class,
             Console\DotenvPutCommand::class,
-            Console\DotenvSetCommand::class
+            Console\DotenvPutEmptyCommand::class,
+            Console\DotenvSetCommand::class,
+            Console\DotenvSetEmptyCommand::class
         ]);
     }
 

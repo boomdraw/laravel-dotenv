@@ -7,7 +7,7 @@ use Boomdraw\Dotenv\Tests\TestCase;
 
 class GeneralTests extends TestCase
 {
-    public function testReload()
+    public function testReload(): void
     {
         $this->assertFalse(Dotenv::has('TEST'));
         $this->setEnv(['TEST' => 'ok']);
@@ -17,7 +17,7 @@ class GeneralTests extends TestCase
         Dotenv::reload();
     }
 
-    public function testCollectionChangeResistance()
+    public function testCollectionChangeResistance(): void
     {
         Dotenv::forget('HELLO_MY_BABY');
         $this->assertTrue(Dotenv::has('HELLO_MY_BABY'));

@@ -199,6 +199,24 @@ class DotenvRepository implements DotenvContract
     }
 
     /**
+     * Change existing setter value if it is empty
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return DotenvRepository
+     * @throws UnwritableFileException
+     */
+    public function putEmpty($key, $value = null): self
+    {
+        return $this->prepareData($key, $value, function ($k, $v) {
+            if ($this->entries->has($k) && $this->entries->get($k) == '') {
+                $this->setEntry($k, $v);
+                $this->writer->put($k, $v);
+            }
+        });
+    }
+
+    /**
      * Set setter regardless of the existence
      *
      * @param mixed $key
@@ -215,6 +233,26 @@ class DotenvRepository implements DotenvContract
                 $this->writer->add($k, $v);
             }
             $this->setEntry($k, $v);
+        });
+    }
+
+    /**
+     * Set setter if it does not exist or empty
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return DotenvRepository
+     * @throws UnwritableFileException
+     */
+    public function setEmpty($key, $value = null): self
+    {
+        return $this->prepareData($key, $value, function ($k, $v) {
+            if ($this->entries->has($k)) {
+                $this->putEmpty($k, $v);
+            } else {
+                $this->writer->add($k, $v);
+                $this->setEntry($k, $v);
+            }
         });
     }
 

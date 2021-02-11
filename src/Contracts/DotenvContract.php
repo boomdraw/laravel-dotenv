@@ -14,7 +14,11 @@ interface DotenvContract
 
     public function put($key, $value = null);
 
+    public function putEmpty($key, $value = null);
+
     public function set($key, $value = null);
+
+    public function setEmpty($key, $value = null);
 
     public function delete($key);
 }

@@ -57,6 +57,12 @@ Dotenv::set($key, ?string $value = null): self
 
 The function writes the `.env` variable regardless of the variable existence.
 
+```php
+Dotenv::setEmpty($key, ?string $value = null): self
+```
+
+The function writes the `.env` variable if it does not exist or empty.
+
 ### add
 
 ```php
@@ -72,6 +78,12 @@ Dotenv::put($key, ?string $value = null): self
 ```
 
 The function updates `.env` variable if it exists.
+
+```php
+Dotenv::putEmpty($key, ?string $value = null): self
+```
+
+The function updates `.env` variable if it exists and empty.
 
 ### delete
 
